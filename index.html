@@ -1,0 +1,107 @@
+<script>
+/* Floating hearts background */
+function createFloatingHearts() {
+    const container = document.getElementById('bgHearts');
+    const hearts = ['💕', '💖', '💗', '💝', '💘', '❤️'];
+
+    setInterval(() => {
+        const heart = document.createElement('div');
+        heart.className = 'heart-float';
+        heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        container.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 17000);
+    }, 3000);
+}
+createFloatingHearts();
+
+/* YES / NO button logic */
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
+let noBtnAttempts = 0;
+
+noBtn.addEventListener('mouseenter', () => {
+    noBtnAttempts++;
+
+    const container = document.getElementById('buttonContainer');
+    const containerRect = container.getBoundingClientRect();
+
+    const maxX = containerRect.width - noBtn.offsetWidth;
+    const maxY = containerRect.height - noBtn.offsetHeight;
+
+    noBtn.style.position = 'absolute';
+    noBtn.style.left = Math.random() * maxX + 'px';
+    noBtn.style.top = Math.random() * maxY + 'px';
+    noBtn.style.transform = `scale(${Math.max(0.4, 1 - noBtnAttempts * 0.12)})`;
+
+    /* YES button grows */
+    yesBtn.classList.add('growing');
+    yesBtn.style.transform = `scale(${1 + noBtnAttempts * 0.2})`;
+    yesBtn.style.padding = `${20 + noBtnAttempts * 5}px ${50 + noBtnAttempts * 10}px`;
+
+    if (noBtnAttempts >= 7) {
+        noBtn.style.opacity = '0';
+        noBtn.style.pointerEvents = 'none';
+    }
+});
+
+/* YES click */
+yesBtn.addEventListener('click', () => {
+    document.getElementById('buttonContainer').style.display = 'none';
+    document.getElementById('successSection').classList.add('show');
+    createConfetti();
+});
+
+/* Confetti */
+function createConfetti() {
+    const colors = ['#FFB3D9', '#FF8FAB', '#FF6B9D', '#FFE5F1'];
+    for (let i = 0; i < 120; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + '%';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.width = c.style.height = Math.random() * 8 + 6 + 'px';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
+    }
+}
+
+/* Envelope */
+document.getElementById('envelope').addEventListener('click', e => {
+    e.currentTarget.classList.toggle('open');
+});
+
+/* Photo reveal */
+function revealPhoto(card) {
+    card.querySelector('.photo-placeholder').style.display = 'none';
+    card.querySelector('.photo-content').classList.add('revealed');
+}
+
+/* Surprise toggles */
+function toggleSurprise(n) {
+    document.getElementById('surprise' + n).classList.toggle('show');
+}
+
+/* Final NO button */
+const noBtn2 = document.getElementById('noBtn2');
+let attempts2 = 0;
+
+noBtn2.addEventListener('mouseenter', () => {
+    attempts2++;
+    const parent = noBtn2.parentElement.getBoundingClientRect();
+    noBtn2.style.left = Math.random() * parent.width + 'px';
+    noBtn2.style.top = Math.random() * 80 - 40 + 'px';
+
+    if (attempts2 >= 3) showConsequence();
+});
+
+function showConsequence() {
+    noBtn2.style.display = 'none';
+    const msg = document.getElementById('consequenceMsg');
+    msg.style.display = 'block';
+    msg.style.animation = 'bounceIn 0.6s ease-out';
+    createConfetti();
+}
+</script>
